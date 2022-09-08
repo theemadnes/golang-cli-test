@@ -45,6 +45,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	fmt.Printf("%v", r.Revision[1].RevisionId)
+	fmt.Printf("%v\n", r.Revision[0].RevisionId)
+	fmt.Printf("%v\n", r.Revision[1].RevisionId)
 
 }
