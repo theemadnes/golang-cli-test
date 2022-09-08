@@ -1,10 +1,12 @@
 package main
 
 import (
+	"bytes"
 	"fmt"
 	"io/ioutil"
 	"log"
 	"os"
+	"os/exec"
 
 	"gopkg.in/yaml.v3"
 )
@@ -45,7 +47,23 @@ func main() {
 		log.Fatal(err)
 	}
 
-	fmt.Printf("%v\n", r.Revision[0].RevisionId)
-	fmt.Printf("%v\n", r.Revision[1].RevisionId)
+	//fmt.Printf("%v\n", r.Revision[0].RevisionId)
+	//fmt.Printf("%v\n", r.Revision[1].RevisionId)
+
+	// cycle through revisions and process
+	for _, revision := range r.Revision {
+		var out bytes.Buffer
+		cmd := exec.Command("gcloud", "run", "revisions", "describe", revision.RevisionId, "--region="+revision.Region, "--project="+revision.ProjectId, "--format=yaml")
+		cmd.Stdout = &out
+		err := cmd.Run()
+
+		//fmt.Println(cmd)
+
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		fmt.Println(out.String())
+	}
 
 }
